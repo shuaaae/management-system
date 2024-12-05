@@ -42,21 +42,20 @@ $_SESSION['last_activity'] = time(); // Update last activity time
     <h2>Student Management System</h2>
   </div>
 </li>
-
       <li class="active">
         <a href="/management-system/admin/index.php">
           <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M240-200h120v-200q0-17 11.5-28.5T400-440h160q17 0 28.5 11.5T600-400v200h120v-360L480-740 240-560v360Zm-80 0v-360q0-19 8.5-36t23.5-28l240-180q21-16 48-16t48 16l240 180q15 11 23.5 28t8.5 36v360q0 33-23.5 56.5T720-120H560q-17 0-28.5-11.5T520-160v-200h-80v200q0 17-11.5 28.5T400-120H240q-33 0-56.5-23.5T160-200Zm320-270Z"/></svg>
           <span>Home</span>
         </a>
       </li>
-      <li>
-        <a href="/management-system/admin/student-dash.php">
+      <li >
+        <a href="/management-system/admin/student-page.php">
           <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M520-640v-160q0-17 11.5-28.5T560-840h240q17 0 28.5 11.5T840-800v160q0 17-11.5 28.5T800-600H560q-17 0-28.5-11.5T520-640ZM120-480v-320q0-17 11.5-28.5T160-840h240q17 0 28.5 11.5T440-800v320q0 17-11.5 28.5T400-440H160q-17 0-28.5-11.5T120-480Zm400 320v-320q0-17 11.5-28.5T560-520h240q17 0 28.5 11.5T840-480v320q0 17-11.5 28.5T800-120H560q-17 0-28.5-11.5T520-160Zm-400 0v-160q0-17 11.5-28.5T160-360h240q17 0 28.5 11.5T440-320v160q0 17-11.5 28.5T400-120H160q-17 0-28.5-11.5T120-160Zm80-360h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z"/></svg>
           <span>Students Info</span>
         </a>
       </li>
       <li>
-        <a href="/management-system/admin/prof-dash.php">
+        <a href="/management-system/admin/prof-page.php">
           <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M520-640v-160q0-17 11.5-28.5T560-840h240q17 0 28.5 11.5T840-800v160q0 17-11.5 28.5T800-600H560q-17 0-28.5-11.5T520-640ZM120-480v-320q0-17 11.5-28.5T160-840h240q17 0 28.5 11.5T440-800v320q0 17-11.5 28.5T400-440H160q-17 0-28.5-11.5T120-480Zm400 320v-320q0-17 11.5-28.5T560-520h240q17 0 28.5 11.5T840-480v320q0 17-11.5 28.5T800-120H560q-17 0-28.5-11.5T520-160Zm-400 0v-160q0-17 11.5-28.5T160-360h240q17 0 28.5 11.5T440-320v160q0 17-11.5 28.5T400-120H160q-17 0-28.5-11.5T120-160Zm80-360h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z"/></svg>
           <span>Professors Info</span>
         </a>
@@ -77,55 +76,78 @@ $_SESSION['last_activity'] = time(); // Update last activity time
         student information, and updates. Our goal is to support your journey toward academic excellence and personal growth.
         Dive in, explore, and make the most out of this system. Together, let’s achieve great things!</p>
     </div>
-<div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
-  <div style="width: 18%; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; margin: 10px;">
-    <img src="/path/to/image1.jpg" alt="Image 1" style="width: 100%;">
+<style>
+  .container > div:hover {
+    transform: scale(1.05);
+  }
+</style>
+
+<div class="container" style="display: grid; grid-template-columns: repeat(3, minmax(200px, 1fr)); gap: 20px; margin-left: 150px; border: none;">
+  <div style="border-radius: 8px; overflow: hidden; margin: 10px; width: 200px; height: 350px; background-color: #3C0008; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    }">
+    <img src="/management-system/img/rexcel.jpg" alt="Image 1" style="width: 100%; height: 200px; object-fit: cover;">
     <div style="padding: 15px;">
       <h3 style="margin: 0;">Rexcel Gigantone</h3>
-      <p style="margin: 10px 0;">Pogi lang</p>
+      <p style="margin: 10px 0;">BSIT 3-1</p>
     </div>
   </div>
 
-  <div style="width: 18%; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; margin: 10px;">
-    <img src="/path/to/image2.jpg" alt="Image 2" style="width: 100%;">
-    <div style="padding: 15px;">
-      <h3 style="margin: 0;">Jamaica Allysa Gimao</h3>
-      <p style="margin: 10px 0;">Description for the second card goes here. It is concise and informative.</p>
-    </div>
-  </div>
-
-  <div style="width: 18%; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; margin: 10px;">
-    <img src="/path/to/image3.jpg" alt="Image 3" style="width: 100%;">
-    <div style="padding: 15px;">
-      <h3 style="margin: 0;">Marc Andro Levantino</h3>
-      <p style="margin: 10px 0;">Description for the third card goes here. It is concise and informative.</p>
-    </div>
-  </div>
-
-  <div style="width: 18%; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; margin: 10px;">
-    <img src="/path/to/image4.jpg" alt="Image 4" style="width: 100%;">
+  <div style="border-radius: 8px; overflow: hidden; margin: 10px; width: 200px; height: 350px; background-color: #3C0008; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    }">
+    <img src="/management-system/img/joshua.jpg" alt="Image 4" style="width: 100%; height: 200px; object-fit: cover;">
     <div style="padding: 15px;">
       <h3 style="margin: 0;">Joshua Godalle</h3>
-      <p style="margin: 10px 0;">Description for the fourth card goes here. It is concise and informative.</p>
+      <p style="margin: 10px 0;">BSIT 3-1</p>
     </div>
   </div>
 
-  <div style="width: 18%; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; margin: 10px;">
-    <img src="/path/to/image4.jpg" alt="Image 4" style="width: 100%;">
+  <div style="border-radius: 8px; overflow: hidden; margin: 10px; width: 200px; height: 350px; background-color: #3C0008; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    }">
+    <img src="/management-system/img/andro.jpg" alt="Image 3" style="width: 100%; height: 200px; object-fit: cover;">
+    <div style="padding: 15px;">
+      <h3 style="margin: 0;">Marc Andro Levantino</h3>
+      <p style="margin: 10px 0;">BSIT 3-1</p>
+    </div>
+  </div>
+
+  <div style="border-radius: 8px; overflow: hidden; margin: 10px; width: 200px; height: 350px; background-color: #3C0008; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    }">
+    <img src="/management-system/img/jam.jpg" alt="Image 4" style="width: 100%; height: 200px; object-fit: cover;">
+    <div style="padding: 15px;">
+      <h3 style="margin: 0;">Jamaica Allysa Gimao</h3>
+      <p style="margin: 10px 0;">BSIT 3-1</p>
+    </div>
+  </div>
+
+  <div style="border-radius: 8px; overflow: hidden; margin: 10px; width: 200px; height: 350px; background-color: #3C0008; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    }">
+    <img src="/management-system/img/andro.jpg" alt="Image 5" style="width: 100%; height: 200px; object-fit: cover;">
     <div style="padding: 15px;">
       <h3 style="margin: 0;">John Paul Garlan</h3>
-      <p style="margin: 10px 0;">Description for the fourth card goes here. It is concise and informative.</p>
+      <p style="margin: 10px 0;">BSIT 3-1</p>
     </div>
   </div>
 
-  <div style="width: 18%; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; margin: 10px;">
-    <img src="/path/to/image5.jpg" alt="Image 5" style="width: 100%;">
+  <div style="border-radius: 8px; overflow: hidden; margin: 10px; width: 200px; height: 350px; background-color: #3C0008; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    }">
+    <img src="/management-system/img/andro.jpg" alt="Image 6" style="width: 100%; height: 200px; object-fit: cover;">
     <div style="padding: 15px;">
       <h3 style="margin: 0;">Althea Mary Neil Lanuza</h3>
-      <p style="margin: 10px 0;">Description for the fifth card goes here. It is concise and informative.</p>
+      <p style="margin: 10px 0;">BSIT 3-1</p>
     </div>
   </div>
-</div>
   </main>
   <script src="app.js"></script>
 </body>
