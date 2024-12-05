@@ -181,12 +181,13 @@ main p{
   display: flex;
   flex-wrap: wrap;
   gap: 20px; /* Spacing between cards */
-  justify-content: center;
+  justify-content: left;
   padding: 10px;
+  margin-top: 20px;
 }
 
 .student-card {
-  background: #fff;
+  background: #FAF9F6;
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -223,28 +224,31 @@ main p{
 /* Buttons */
 .card-buttons .view-btn,
 .card-buttons .edit-btn {
-  background-color: transparent; /* Default button color */
-  color: grey;
+  background-color: var(--accent-clr);
+  color: white;
   border: none;
-  padding: 8px 12px;
-  font-size: 14px;
+  padding: 10px 15px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  flex: 1; /* Equal button width */
-  margin: 0 5px; /* Space between buttons */
-  text-align: center;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: 15px;
+  margin-top: 10px;
 }
 
 /* View Button Hover */
 .card-buttons .view-btn:hover {
-  color: blue;
-  border-bottom: 2px solid blue;
+  color: black;
+  background-color: #4d68ff;
 }
 
 /* Edit Button Hover */
 .card-buttons .edit-btn:hover {
   color: blue; /* Green for edit */
-  border-bottom: 2px solid blue;
+  /* Remove the blue line under the button */
+  border-bottom: none;
 }
 
 

@@ -132,7 +132,7 @@ if (isset($_POST['login'])) {
                     header("Location: /management-system/student/student-home.php");
                     exit();
                 } elseif ($row['user_type'] == 'professor') {
-                    header("Location: /management-system/teacher/teacher-page.php");
+                    header("Location: /management-system/teacher/prof-home.php");
                     exit();
                 }
             } else {
