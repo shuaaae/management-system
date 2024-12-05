@@ -38,40 +38,26 @@ body{
   overflow: hidden;
   text-wrap: nowrap;
 }
-    /* Logo container styling */
-    .logo {
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      text-align: center;
-      margin: 20px 0;
-    }
-    
-    /* Image styling for the logo */
-    /* Logo container styling */
-    .logo {
-      display: flex;
-      align-items: center;
-      text-align: center;
-      margin: 5px 0;
-    }
-    
-    /* Image styling for the logo */
-    .logo img {
-      max-width: 150px; /* Adjust size */
-      height: auto;
-      margin-bottom: 5px;
-    }
-    
-    /* Heading styling for h2 inside the logo container */
-    .logo h2 {
-      font-size: 14px; /* Adjust font size */
-      font-weight: bold;
-      color: white; /* Matching the red accent in the logo */
-      text-transform: uppercase;
-      margin: 0;
-      line-height: 1.4;
-    }
+.logo {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  margin: 20px 0;
+}
+.logo img {
+  max-width: 150px; /* Adjust size */
+  height: auto;
+  margin-bottom: 5px;
+}
+.logo h2 {
+  font-size: 14px; /* Adjust font size */
+  font-weight: bold;
+  color: white; /* Matching the red accent in the logo */
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.4;
+}
 #sidebar.close{
   padding: 5px;
   width: 60px;
@@ -173,7 +159,9 @@ main p{
   margin-bottom: 20px;
   padding: min(3em, 15%);
 
-  h2, p { margin-top: 1em }
+  h2, p {
+    margin-top: 1em;
+  }
 }
 
 /* Gallery Layout */
@@ -247,7 +235,6 @@ main p{
   border-bottom: 2px solid blue;
 }
 
-
 @media(max-width: 800px){
   body{
     grid-template-columns: 1fr;
@@ -319,7 +306,7 @@ main p{
     }
   }
 }
-/* CSS for the logo container */
+
 #logo-container {
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }

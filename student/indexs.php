@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'student') {
     // Check if the logout button is clicked and handle the logout event
     if (isset($_POST['logout'])) {
         session_destroy(); // Destroy the session
-        header("Location: /management-system/login.php"); // Redirect to login page
+        header("Location: /management-system/base.php"); // Redirect to login page
         exit();
     }
     
