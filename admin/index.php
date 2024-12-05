@@ -67,6 +67,12 @@ $_SESSION['last_activity'] = time(); // Update last activity time
           <span>Profile</span>
         </a>
       </li>
+      <li>
+      <a href="/management-system/logout.php">
+    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#e8eaed"><path d="M10.09 15.59L11.5 17l5-5-5-5L10.09 15.59zM21 7h-3v1.5h-2V7H3v10.5h2V8.5h3v9H21V7z"/></svg>
+    <span>Logout</span>
+  </a>
+</li>
     </ul>
   </nav>
   <main>

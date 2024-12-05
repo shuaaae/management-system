@@ -129,7 +129,7 @@ if (isset($_POST['login'])) {
                     header("Location: /management-system/admin/index.php");
                     exit();
                 } elseif ($row['user_type'] == 'student') {
-                    header("Location: /management-system/student/indexs.php");
+                    header("Location: /management-system/student/student-home.php");
                     exit();
                 } elseif ($row['user_type'] == 'professor') {
                     header("Location: /management-system/teacher/teacher-page.php");
@@ -199,7 +199,7 @@ function showModal($error_message) {
                 <input type="checkbox" id="remember">
                 Remember me
             </label>
-            <a href="#">Forgot Password?</a>
+            <a href="/management-system/forgot-pass/forgot.php">Forgot Password?</a>
         </div>
 
         <button class="login-btn" name="login">Login</button>
@@ -255,7 +255,6 @@ function showModal($error_message) {
             <select name="user_type" required>
                 <option value="student" <?= (isset($_POST['user_type']) && $_POST['user_type'] == 'student') ? 'selected' : '' ?>>Student</option>
                 <option value="professor" <?= (isset($_POST['user_type']) && $_POST['user_type'] == 'professor') ? 'selected' : '' ?>>Professor</option>
-                <option value="admin" <?= (isset($_POST['user_type']) && $_POST['user_type'] == 'admin') ? 'selected' : '' ?>>Admin</option>
             </select>
         </div>
 

@@ -1,0 +1,126 @@
+<?php
+// Start the session to access session variables
+session_start();
+
+// Database connection
+@include '../config.php';
+
+// Check if the user is logged in and is a student
+if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'student') {
+    // Redirect to the login page if the user is not logged in or is not a student
+    
+    // Check if the logout button is clicked and handle the logout event
+    if (isset($_POST['logout'])) {
+        session_destroy(); // Destroy the session
+        header("Location: /management-system/base.php"); // Redirect to login page
+        exit();
+    }
+    
+    exit();
+}
+
+// Get the logged-in user's ID from the session
+$user_id = $_SESSION['user_id'];
+
+// Fetch data for the logged-in student
+$query = "SELECT * FROM user_form WHERE id = '$user_id' AND user_type = 'student'";
+$result = mysqli_query($conn, $query);
+
+// Check if the query was successful and fetch the user data
+if ($result && mysqli_num_rows($result) > 0) {
+    $student = mysqli_fetch_assoc($result);
+} else {
+    die("Failed to fetch student information: " . mysqli_error($conn));
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <link rel="stylesheet" href="style-ad.css">
+  <style>
+    .change-password-btn {
+      background-color: transparent;
+      border: none;
+      color: violet;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .change-password-btn:hover {
+      color: blue;
+    }
+    .student-info {
+      margin: 20px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: transparent;
+    }
+    .student-info h3 {
+      margin-bottom: 10px;
+    }
+    .student-info p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <nav id="sidebar">
+    <ul>
+      <li>
+        <span class="logo">Student</span>
+        <button onclick=toggleSidebar() id="toggle-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m313-480 155 156q11 11 11.5 27.5T468-268q-11 11-28 11t-28-11L228-452q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l184-184q11-11 27.5-11.5T468-692q11 11 11 28t-11 28L313-480Zm264 0 155 156q11 11 11.5 27.5T732-268q-11 11-28 11t-28-11L492-452q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l184-184q11-11 27.5-11.5T732-692q11 11 11 28t-11 28L577-480Z"/></svg>
+        </button>
+      </li>
+      
+<li>
+  <div id="logo-container" class="logo">
+    <img src="/management-system/img/sorsu-removebg-preview.png" alt="Logo">
+    <h2>Student Management System</h2>
+  </div>
+</li>
+
+      <li>
+        <a href="/management-system/student/student-home.php">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M240-200h120v-200q0-17 11.5-28.5T400-440h160q17 0 28.5 11.5T600-400v200h120v-360L480-740 240-560v360Zm-80 0v-360q0-19 8.5-36t23.5-28l240-180q21-16 48-16t48 16l240 180q15 11 23.5 28t8.5 36v360q0 33-23.5 56.5T720-120H560q-17 0-28.5-11.5T520-160v-200h-80v200q0 17-11.5 28.5T400-120H240q-33 0-56.5-23.5T160-200Zm320-270Z"/></svg>
+          <span>Home</span>
+        </a>
+      </li>
+      <li  class="active">
+        <a href="/management-system/student/student-info.php">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M520-640v-160q0-17 11.5-28.5T560-840h240q17 0 28.5 11.5T840-800v160q0 17-11.5 28.5T800-600H560q-17 0-28.5-11.5T520-640ZM120-480v-320q0-17 11.5-28.5T160-840h240q17 0 28.5 11.5T440-800v320q0 17-11.5 28.5T400-440H160q-17 0-28.5-11.5T120-480Zm400 320v-320q0-17 11.5-28.5T560-520h240q17 0 28.5 11.5T840-480v320q0 17-11.5 28.5T800-120H560q-17 0-28.5-11.5T520-160Zm-400 0v-160q0-17 11.5-28.5T160-360h240q17 0 28.5 11.5T440-320v160q0 17-11.5 28.5T400-120H160q-17 0-28.5-11.5T120-160Zm80-360h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z"/></svg>
+          <span>Students Info</span>
+        </a>
+      </li>
+      <li>
+      <a href="/management-system/logout.php">
+    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#e8eaed"><path d="M10.09 15.59L11.5 17l5-5-5-5L10.09 15.59zM21 7h-3v1.5h-2V7H3v10.5h2V8.5h3v9H21V7z"/></svg>
+    <span>Logout</span>
+  </a>
+</li>
+    </ul>
+  </nav>
+  <main>
+    <div class="main-content">
+    <div class="student-info">
+        <h3>Welcome, <?= htmlspecialchars($student['fName']); ?>!</h3>
+        <p><strong>Username:</strong> <?= htmlspecialchars($student['uName']); ?></p>
+        <p><strong>Email:</strong> <?= htmlspecialchars($student['email']); ?></p>
+        <p><strong>Account Type:</strong> <?= htmlspecialchars($student['user_type']); ?></p>
+        <button 
+            class="change-password-btn" 
+            onclick="location.href='/management-system/forgot-pass/reset.php?email=<?= urlencode($student['email']); ?>&from=student-info'">
+            Change Password
+        </button>
+    </div>  
+    </div>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
