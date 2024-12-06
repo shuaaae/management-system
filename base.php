@@ -136,12 +136,12 @@ if (isset($_POST['login'])) {
                     exit();
                 }
             } else {
-                $error_message = "Invalid password";
+                $error_message = "Incorrect Username or Password";
                 showModal($error_message);
             }
         }
     } else {
-        $error_message = "No user found with that username";
+        $error_message = "Incorrect Username or Password";
         showModal($error_message);
     }
 }

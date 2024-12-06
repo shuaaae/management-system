@@ -43,29 +43,45 @@ if ($result && mysqli_num_rows($result) > 0) {
   <link rel="stylesheet" href="style-st.css">
   <style>
     .change-password-btn {
-      background-color: transparent;
-      border: none;
-      color: violet;
+      display: inline-block;
+      background-color: #4B70F5;
+      color: white;
+      border-radius: 10px;
       padding: 10px 20px;
+      border: none;
       cursor: pointer;
-      border-radius: 5px;
       font-size: 16px;
+      transition: transform 0.2s;
+      margin-top:10px;
+      
     }
     .change-password-btn:hover {
-      color: blue;
+      transform: scale(1.05);
     }
+    
     .student-info {
       margin: 20px;
       padding: 20px;
-      border: 1px solid #ccc;
       border-radius: 5px;
-      background-color: transparent;
+      background-color: #353941;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+      box-sizing: border-box;
     }
     .student-info h3 {
       margin-bottom: 10px;
     }
     .student-info p {
       margin: 5px 0;
+    }
+    .student-info img {
+      float:right;
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      margin-top: 15px;
+      border-radius: 10px;
     }
   </style>
 </head>
@@ -93,7 +109,7 @@ if ($result && mysqli_num_rows($result) > 0) {
         </a>
       </li>
       <li  class="active">
-        <a href="/management-system/student/student-info.php">
+        <a href="/management-system/student/st-profile.php">
         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-240v-32q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v32q0 33-23.5 56.5T720-160H240q-33 0-56.5-23.5T160-240Zm80 0h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/></svg>
         <span>My Profile</span>
         </a>
@@ -109,15 +125,18 @@ if ($result && mysqli_num_rows($result) > 0) {
   <main>
     <div class="main-content">
     <div class="student-info">
-        <h3>Welcome, <?= htmlspecialchars($student['fName']); ?>!</h3>
-        <p><strong>Username:</strong> <?= htmlspecialchars($student['uName']); ?></p>
-        <p><strong>Email:</strong> <?= htmlspecialchars($student['email']); ?></p>
-        <p><strong>Account Type:</strong> <?= htmlspecialchars($student['user_type']); ?></p>
-        <button 
-            class="change-password-btn" 
-            onclick="location.href='/management-system/forgot-pass/reset.php?email=<?= urlencode($student['email']); ?>&from=student-info'">
-            Change Password
-        </button>
+        <img class="student-profile-pic" src="/management-system/img/andro.jpg" alt="Profile Picture">
+        <div class="student-info-content">
+            <h3>Welcome, <?= htmlspecialchars($student['fName']); ?>!</h3>
+            <p><strong>Username:</strong> <?= htmlspecialchars($student['uName']); ?></p>
+            <p><strong>Email:</strong> <?= htmlspecialchars($student['email']); ?></p>
+            <p><strong>Account Type:</strong> <?= htmlspecialchars($student['user_type']); ?></p>
+            <button 
+                class="change-password-btn" 
+                onclick="location.href='/management-system/forgot-pass/reset.php?email=<?= urlencode($student['email']); ?>&from=student-info'">
+                Change Password
+            </button>
+        </div>
     </div>  
     </div>
   </main>

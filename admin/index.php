@@ -113,7 +113,7 @@ $_SESSION['last_activity'] = time(); // Update last activity time
     <div style="padding: 15px;">
       <h3 style="margin: 0;">Marc Andro Levantino</h3>
       <p style="margin: 10px 0;">BSIT 3-1</p>
-    </div>
+    </div>`
   </div>
 
   <div style="border-radius: 8px; overflow: hidden; margin: 10px; width: 200px; height: 350px; background-color: #3C0008; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
