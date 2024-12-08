@@ -107,6 +107,14 @@ if (isset($_POST['login'])) {
     $username = secureInput($conn, $_POST['username']);
     $password = $_POST['password'];
 
+    // Check for existing lockout
+    if (isset($_SESSION['lockout_time']) && time() < $_SESSION['lockout_time']) {
+        $remaining_time = ($_SESSION['lockout_time'] - time());
+        $error_message = "Too many failed attempts. Please wait $remaining_time seconds before trying again.";
+        showModal($error_message); // Show modal instead of redirect
+        exit();
+    }
+
     $select = "SELECT * FROM user_form WHERE uName = ?";
     $stmt = $conn->prepare($select);
     $stmt->bind_param("s", $username);
@@ -121,6 +129,10 @@ if (isset($_POST['login'])) {
             showModal($error_message);
         } else {
             if (password_verify($password, $row['password'])) {
+                // Reset login attempts on successful login
+                unset($_SESSION['login_attempts']);
+                unset($_SESSION['lockout_time']);
+
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['user_type'] = $row['user_type'];
                 $_SESSION['last_activity'] = time();
@@ -136,12 +148,36 @@ if (isset($_POST['login'])) {
                     exit();
                 }
             } else {
-                $error_message = "Incorrect Username or Password";
+                // Increment login attempts
+                if (!isset($_SESSION['login_attempts'])) {
+                    $_SESSION['login_attempts'] = 1;
+                } else {
+                    $_SESSION['login_attempts']++;
+                }
+
+                if ($_SESSION['login_attempts'] >= 3) {
+                    $_SESSION['lockout_time'] = time() + 180; // 3-minute lockout
+                    $error_message = "Too many failed attempts. Please wait 3 minutes before trying again.";
+                } else {
+                    $error_message = "Incorrect Username or Password";
+                }
                 showModal($error_message);
             }
         }
     } else {
-        $error_message = "Incorrect Username or Password";
+        // Increment login attempts
+        if (!isset($_SESSION['login_attempts'])) {
+            $_SESSION['login_attempts'] = 1;
+        } else {
+            $_SESSION['login_attempts']++;
+        }
+
+        if ($_SESSION['login_attempts'] >= 3) {
+            $_SESSION['lockout_time'] = time() + 180; // 3-minute lockout
+            $error_message = "Too many failed attempts. Please wait 3 minutes before trying again.";
+        } else {
+            $error_message = "Incorrect Username or Password";
+        }
         showModal($error_message);
     }
 }
@@ -193,7 +229,9 @@ function showModal($error_message) {
             <input type="password" name="password" id="loginPassword" placeholder="Password" required>
             <i class='bx bx-hide' id="togglePassword"></i>
         </div>
-
+        <div id="countdown-container" style="display: none; color: red;">
+    <p>Too many failed attempts. Please wait <span id="countdown"></span> to try again.</p>
+    </div>
         <div class="remember-forgot-box">
             <label for="remember">
                 <input type="checkbox" id="remember">
@@ -202,7 +240,8 @@ function showModal($error_message) {
             <a href="/management-system/forgot-pass/forgot.php">Forgot Password?</a>
         </div>
 
-        <button class="login-btn" name="login">Login</button>
+        <button class="login-btn" name="login" id="loginButton" disabled>Login</button>
+
 
         <p class="register">
             Don't have an account?
@@ -387,5 +426,54 @@ function showModal($error_message) {
         });
     });
     </script>
+    <?php
+// Check if lockout time is set and calculate the remaining time
+if (isset($_SESSION['lockout_time']) && time() < $_SESSION['lockout_time']) {
+    $remaining_time = $_SESSION['lockout_time'] - time();
+} else {
+    $remaining_time = 0;
+}
+?>
+
+<script>
+// Get the remaining time from PHP
+    // Get the remaining time from PHP
+    let remainingTime = <?php echo $remaining_time; ?>;
+
+    const countdownContainer = document.getElementById('countdown-container');
+    const countdownElement = document.getElementById('countdown');
+    const loginButton = document.getElementById('loginButton');
+
+    if (remainingTime > 0) {
+        // Disable the login button
+        loginButton.disabled = true;
+
+        // Show the countdown container
+        countdownContainer.style.display = 'block';
+
+        // Update the countdown every second
+        const timer = setInterval(() => {
+            if (remainingTime <= 0) {
+                clearInterval(timer);
+                countdownContainer.style.display = 'none';
+
+                // Re-enable the login button
+                loginButton.disabled = false;
+                return;
+            }
+
+            // Convert seconds to minutes and seconds format
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+            countdownElement.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+
+            remainingTime--;
+        }, 1000);
+    } else {
+        // Ensure the login button is enabled if there's no countdown
+        loginButton.disabled = false;
+    }
+</script>
+
 </body>
 </html>

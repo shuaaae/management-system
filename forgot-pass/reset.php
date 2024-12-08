@@ -2,13 +2,17 @@
 @include '../config.php';
 
 // Get email and source (`from`) from query string
-$email = isset($_GET['email']) ? mysqli_real_escape_string($conn, $_GET['email']) : null;
-$from = isset($_GET['from']) ? $_GET['from'] : null;
+$email = filter_input(INPUT_GET, 'email', FILTER_SANITIZE_EMAIL);
+$from = filter_input(INPUT_GET, 'from', FILTER_SANITIZE_STRING);
 
 // Verify email exists in the database
 if ($email) {
-    $query = "SELECT * FROM user_form WHERE email = '$email'";
-    $result = mysqli_query($conn, $query);
+    $query = "SELECT * FROM user_form WHERE email = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, 's', $email);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
     if (mysqli_num_rows($result) == 0) {
         echo "<script>alert('Invalid email address.'); window.location.href = '/management-system/forgot-pass/forgot.php';</script>";
         exit();
@@ -20,15 +24,17 @@ if ($email) {
 
 // Handle password reset
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset-submit'])) {
-    $newPassword = mysqli_real_escape_string($conn, $_POST['new-password']);
-    $confirmPassword = mysqli_real_escape_string($conn, $_POST['confirm-password']);
+    $newPassword = filter_input(INPUT_POST, 'new-password', FILTER_SANITIZE_STRING);
+    $confirmPassword = filter_input(INPUT_POST, 'confirm-password', FILTER_SANITIZE_STRING);
 
     if ($newPassword === $confirmPassword) {
         $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
         // Update password for the specific email
-        $updateQuery = "UPDATE user_form SET password = '$hashedPassword' WHERE email = '$email'";
-        $updateResult = mysqli_query($conn, $updateQuery);
+        $updateQuery = "UPDATE user_form SET password = ? WHERE email = ?";
+        $stmt = mysqli_prepare($conn, $updateQuery);
+        mysqli_stmt_bind_param($stmt, 'ss', $hashedPassword, $email);
+        $updateResult = mysqli_stmt_execute($stmt);
 
         if ($updateResult) {
             // Redirect based on the source of the request
@@ -124,3 +130,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset-submit'])) {
     </div>
 </body>
 </html>
+
