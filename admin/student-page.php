@@ -4,7 +4,7 @@ session_start();
 // Database connection
 @include '../config.php';
 
-// Fetch data for users with user_type 'student'
+// Fetch data for users with user_type 'student', including department and program
 $query = "SELECT * FROM user_form WHERE user_type = 'student'";
 $result = mysqli_query($conn, $query);
 
@@ -28,7 +28,24 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) >
     exit;
 }
 $_SESSION['last_activity'] = time(); // Update last activity time
+
+// Handle the delete request
+if (isset($_GET['delete_id'])) {
+    $delete_id = $_GET['delete_id'];
+
+    // SQL query to delete the student
+    $delete_query = "DELETE FROM user_form WHERE id = '$delete_id' AND user_type = 'student'";
+
+    if (mysqli_query($conn, $delete_query)) {
+        // Redirect back to the students list page after deletion
+        header("Location: /management-system/admin/student-page.php");
+        exit;
+    } else {
+        echo "Error deleting student: " . mysqli_error($conn);
+    }
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,7 +53,7 @@ $_SESSION['last_activity'] = time(); // Update last activity time
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home</title>
-  <link rel="stylesheet" href="style-admin.css">
+  <link rel="stylesheet" href="style-ad.css">
 </head>
 <body>
   <nav id="sidebar">
@@ -92,15 +109,19 @@ $_SESSION['last_activity'] = time(); // Update last activity time
                     <?php
                     // Fetch and display each student record as a card
                     while ($row = mysqli_fetch_assoc($result)) {
-                        echo "<div class='student-card'>";
-                        echo "<h3>" . htmlspecialchars($row['fName']) . "</h3>";  // Display full name (fName)
-                        echo "<p><strong>Username:</strong> " . htmlspecialchars($row['uName']) . "</p>";  // Display username (uName)
-                        echo "<p><strong>Email:</strong> " . htmlspecialchars($row['email']) . "</p>";  // Display email
-                        echo "<p><strong>Verified:</strong> " . ($row['verified'] ? 'Yes' : 'No') . "</p>";  // Display verified status
-                        echo "<div class='card-buttons'>";  // Container for buttons
-                        echo "<a href='/management-system/forgot-pass/reset.php?email=" . urlencode($row['email']) . "&from=admin-dash' class='view-btn'>Change Password</a>";
-                        echo "</div>";
-                        echo "</div>";
+                      echo "<div class='student-card'>";
+                      echo "<h3>" . htmlspecialchars($row['fName']) . "</h3>";  // Display full name (fName)
+                      echo "<p><strong>Username:</strong> " . htmlspecialchars($row['uName']) . "</p>";  // Display username (uName)
+                      echo "<p><strong>Email:</strong> " . htmlspecialchars($row['email']) . "</p>";  // Display email
+                      echo "<p><strong>Department:</strong> " . htmlspecialchars($row['department']) . "</p>";  // Display department
+                      $program = isset($row['course']) ? htmlspecialchars($row['course']) : 'N/A';  // Default to 'N/A' if 'program' is not set
+                      echo "<p><strong>Program:</strong> " . $program . "</p>";  // Display program
+                      echo "<p><strong>Verified:</strong> " . ($row['verified'] ? 'Yes' : 'No') . "</p>";  // Display verified status
+                      echo "<div class='card-buttons'>";  // Container for buttons
+                      echo "<a href='/management-system/forgot-pass/reset.php?email=" . urlencode($row['email']) . "&from=admin-dash' class='view-btn'>Change Password</a>";
+                      echo "<a href='?delete_id=" . $row['id'] . "' class='delete-btn' onclick='return confirm(\"Are you sure you want to delete this student?\")'>Delete</a>";  // Add Delete button
+                      echo "</div>";
+                      echo "</div>";
                     }
                     ?>
                 </div>

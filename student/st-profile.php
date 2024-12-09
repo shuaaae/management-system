@@ -8,8 +8,6 @@ session_start();
 // Check if the user is logged in and is a student
 if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'student') {
     // Redirect to the login page if the user is not logged in or is not a student
-    
-    // Check if the logout button is clicked and handle the logout event
     if (isset($_POST['logout'])) {
         session_destroy(); // Destroy the session
         header("Location: /management-system/base.php"); // Redirect to login page
@@ -26,12 +24,70 @@ $user_id = $_SESSION['user_id'];
 $query = "SELECT * FROM user_form WHERE id = '$user_id' AND user_type = 'student'";
 $result = mysqli_query($conn, $query);
 
-// Check if the query was successful and fetch the user data
+// Initialize $student to null if no result found
+$student = null;
+
 if ($result && mysqli_num_rows($result) > 0) {
     $student = mysqli_fetch_assoc($result);
 } else {
     die("Failed to fetch student information: " . mysqli_error($conn));
 }
+
+// Function to handle the image upload
+function uploadProfilePicture($user_id, $conn, $student) {
+    if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] === 0) {
+        $fileTmpPath = $_FILES['profile_pic']['tmp_name'];
+        $fileName = $_FILES['profile_pic']['name'];
+        $fileSize = $_FILES['profile_pic']['size'];
+        $fileType = $_FILES['profile_pic']['type'];
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        // Validate file extension
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        if (!in_array($fileExtension, $allowedExtensions)) {
+            die("Invalid file type. Only JPG, JPEG, PNG, and GIF files are allowed.");
+        }
+
+        // Set upload directory
+        $uploadDir = '../uploads/profile_pics/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);  // Create the directory if it doesn't exist
+        }
+
+        // Generate a unique file name to prevent overwriting
+        $newFileName = uniqid() . '.' . $fileExtension;
+        $filePath = $uploadDir . $newFileName;
+
+        // Move the uploaded file to the target directory
+        if (move_uploaded_file($fileTmpPath, $filePath)) {
+            // First, delete the old profile picture (if it exists and is not the default)
+            if ($student && $student['profile_pic'] != 'default-profile-pic.jpg') {
+                $oldImagePath = $uploadDir . $student['profile_pic'];
+                if (file_exists($oldImagePath) && !is_dir($oldImagePath)) {
+                    unlink($oldImagePath);  // Delete the old file
+                }
+            }
+
+            // Update the student's profile picture in the database
+            $query = "UPDATE user_form SET profile_pic = '$newFileName' WHERE id = '$user_id'";
+            if (mysqli_query($conn, $query)) {
+                return $newFileName; // Return the filename for display
+            } else {
+                die("Database error: " . mysqli_error($conn));
+            }
+        } else {
+            die("Error uploading the file. Please try again.");
+        }
+    }
+}
+
+// Check if the form to upload profile picture is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_pic'])) {
+    $newProfilePic = uploadProfilePicture($user_id, $conn, $student); // Upload the profile picture and update the database
+}
+
+// Set the profile picture, using the default one if not set
+$profilePic = isset($student['profile_pic']) ? $student['profile_pic'] : 'default-profile-pic.jpg'; 
 ?>
 
 <!DOCTYPE html>
@@ -75,13 +131,56 @@ if ($result && mysqli_num_rows($result) > 0) {
     .student-info p {
       margin: 5px 0;
     }
+
+    .student-info {
+      margin: 20px;
+      padding: 20px;
+      border-radius: 5px;
+      background-color: #353941;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .student-info h3 {
+      margin-bottom: 10px;
+    }
+    .student-info p {
+      margin: 5px 0;
+    }
+
     .student-info img {
-      float:right;
       width: 150px;
       height: 150px;
       object-fit: cover;
-      margin-top: 15px;
       border-radius: 10px;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      transition: all 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    .upload-form {
+      margin-top: 20px;
+    }
+
+    .upload-form input[type="file"] {
+      margin-right: 10px;
+    }
+
+    #position-controls {
+      margin-top: 15px;
+    }
+
+    #position-controls input {
+      margin: 5px;
+      width: 60px;
+    }
+
+    #uploadFileInput {
+      display: none;
     }
   </style>
 </head>
@@ -124,22 +223,64 @@ if ($result && mysqli_num_rows($result) > 0) {
   </nav>
   <main>
     <div class="main-content">
-    <div class="student-info">
-        <img class="student-profile-pic" src="/management-system/img/andro.jpg" alt="Profile Picture">
-        <div class="student-info-content">
-            <h3>Welcome, <?= htmlspecialchars($student['fName']); ?>!</h3>
-            <p><strong>Username:</strong> <?= htmlspecialchars($student['uName']); ?></p>
-            <p><strong>Email:</strong> <?= htmlspecialchars($student['email']); ?></p>
-            <p><strong>Account Type:</strong> <?= htmlspecialchars($student['user_type']); ?></p>
-            <button 
-                class="change-password-btn" 
-                onclick="location.href='/management-system/forgot-pass/reset.php?email=<?= urlencode($student['email']); ?>&from=student-info'">
-                Change Password
-            </button>
+   <div class="student-info">
+   <div class="student-info-content">
+          <h3>Welcome, <?= htmlspecialchars($student['fName']); ?>!</h3>
+          <p><strong>Username:</strong> <?= htmlspecialchars($student['uName']); ?></p>
+          <p><strong>Email:</strong> <?= htmlspecialchars($student['email']); ?></p>
+          <p><strong>Account Type:</strong> <?= htmlspecialchars($student['user_type']); ?></p>
+          <button 
+              class="change-password-btn" 
+              onclick="location.href='/management-system/forgot-pass/reset.php?email=<?= urlencode($student['email']); ?>&from=student-info'">
+              Change Password
+          </button>
+          <!-- Display the profile picture if available -->
+          <img src="../uploads/profile_pics/<?= htmlspecialchars($profilePic); ?>" alt="Profile Picture">
+          
+          <div class="upload-form">
+    <!-- If no picture is uploaded, show upload form -->
+    <?php if ($profilePic == 'default-profile-pic.jpg'): ?>
+        <form method="POST" enctype="multipart/form-data">
+            <label for="profile_pic">Upload Profile Picture:</label>
+            <input type="file" name="profile_pic" id="profile_pic" accept="image/*" required>
+            <button type="submit" class="change-password-btn">Upload</button>
+        </form>
+    <?php else: ?>
+        <!-- Show Edit Picture button and trigger file input on click -->
+        <button type="button" class="change-password-btn" onclick="document.getElementById('uploadFileInput').click();">Edit Picture</button>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="profile_pic" id="uploadFileInput" accept="image/*" onchange="this.form.submit();" />
+        </form>
+    <?php endif; ?>
+</div>
+
+<!-- Javascript for adjusting image position -->
+<script>
+     // JavaScript to dynamically update the profile picture without refresh
+document.querySelector('input[type="file"]').addEventListener('change', function(event) {
+  var formData = new FormData();
+  formData.append('profile_pic', event.target.files[0]);
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '', true);  // Send request to the current page
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      // Update the profile picture on the page immediately
+      var newProfilePic = xhr.responseText;
+      document.querySelector('.student-info img').src = '../uploads/profile_pics/' + newProfilePic;
+    }
+  };
+  xhr.send(formData);
+});
+
+        </script>
+
+          </div>
         </div>
-    </div>  
+      </div>  
     </div>
   </main>
+
   <script src="app.js"></script>
 </body>
 </html>

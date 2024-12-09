@@ -4,15 +4,6 @@ session_start();
 // Database connection
 @include '../config.php';
 
-// Fetch data for users with user_type 'professor'
-$query = "SELECT * FROM user_form WHERE user_type = 'professor'";
-$result = mysqli_query($conn, $query);
-
-// Check if the query was successful and if there are results
-if (!$result) {
-    die("Query failed: " . mysqli_error($conn));
-}
-
 // Redirect to login page if the user is not logged in or is not an admin
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] != 'admin') {
     header("Location: /management-system/base.php");
@@ -28,7 +19,37 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) >
     exit;
 }
 $_SESSION['last_activity'] = time(); // Update last activity time
+
+// Check if the delete request exists
+if (isset($_GET['delete_id'])) {
+    $delete_id = $_GET['delete_id'];
+
+    // Prevent SQL Injection by using prepared statements
+    $stmt = $conn->prepare("DELETE FROM user_form WHERE id = ?");
+    $stmt->bind_param("i", $delete_id);
+
+    // Execute the query and check if the deletion was successful
+    if ($stmt->execute()) {
+        // Redirect back to the professor's list after successful deletion
+        header("Location: /management-system/admin/prof-page.php");
+        exit;
+    } else {
+        // Display an error message if deletion failed
+        echo "Error deleting professor: " . $conn->error;
+    }
+}
+
+// Fetch professor data from the database
+$query = "SELECT * FROM user_form WHERE user_type = 'professor'"; // Adjust the condition if needed
+$result = $conn->query($query); // Execute the query
+
+// Check if the query was successful
+if (!$result) {
+    echo "Error fetching professor data: " . $conn->error;
+    exit;
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,7 +57,7 @@ $_SESSION['last_activity'] = time(); // Update last activity time
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home</title>
-  <link rel="stylesheet" href="style-admin.css">
+  <link rel="stylesheet" href="style-ad.css">
 </head>
 <body>
   <nav id="sidebar">
@@ -99,6 +120,7 @@ $_SESSION['last_activity'] = time(); // Update last activity time
                         echo "<p><strong>Verified:</strong> " . ($row['verified'] ? 'Yes' : 'No') . "</p>";  // Display verified status
                         echo "<div class='card-buttons'>";  // Container for buttons
                         echo "<a href='/management-system/forgot-pass/reset.php?email=" . urlencode($row['email']) . "&from=admin-dash' class='view-btn'>Change Password</a>";
+                        echo "<a href='?delete_id=" . $row['id'] . "' class='delete-btn' onclick='return confirm(\"Are you sure you want to delete this Professor?\")'>Delete</a>";
                         echo "</div>";
                         echo "</div>";
                     }

@@ -33,6 +33,8 @@ if (isset($_POST['submit'])) { // Registration logic
     $password = $_POST['password'];
     $cpass = $_POST['cpassword'];
     $user_type = secureInput($conn, $_POST['user_type']);
+    $department = secureInput($conn, $_POST['department']);
+    $course = secureInput($conn, $_POST['course']); // Get course (program) value
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error[] = 'Invalid email format';
@@ -59,10 +61,11 @@ if (isset($_POST['submit'])) { // Registration logic
 
         mysqli_begin_transaction($conn);
 
-        $insert = "INSERT INTO user_form (fName, uName, email, password, user_type, verification_token, verified) 
-                   VALUES (?, ?, ?, ?, ?, ?, 0)";
+        // Updated query to include department and course
+        $insert = "INSERT INTO user_form (fName, uName, email, password, user_type, department, course, verification_token, verified) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)";
         $stmt = $conn->prepare($insert);
-        $stmt->bind_param("ssssss", $fName, $uName, $email, $hashed_pass, $user_type, $verification_token);
+        $stmt->bind_param("ssssssss", $fName, $uName, $email, $hashed_pass, $user_type, $department, $course, $verification_token);
 
         if ($stmt->execute()) {
             try {
@@ -259,7 +262,7 @@ function showModal($error_message) {
             }
         }
         ?>
-
+<form action="your_php_script.php" method="POST" class="register-form" id="register" style="display:none;">
         <div class="input-box">
             <i class='bx bxs-user'></i>
             <input type="text" name="fName" id="fName" placeholder="Name" value="<?= isset($_POST['fName']) ? $_POST['fName'] : '' ?>" required>
@@ -296,6 +299,105 @@ function showModal($error_message) {
                 <option value="professor" <?= (isset($_POST['user_type']) && $_POST['user_type'] == 'professor') ? 'selected' : '' ?>>Professor</option>
             </select>
         </div>
+
+        <div class="input-box">
+    <i class='bx bxs-buildings'></i>
+    <select id="department" name="department" disabled required>
+        <option value="" disabled selected>Select Department</option>
+        <option value="DICT" <?= (isset($_POST['department']) && $_POST['department'] == 'DICT') ? 'selected' : '' ?>>DICT</option>
+        <option value="BME" <?= (isset($_POST['department']) && $_POST['department'] == 'BME') ? 'selected' : '' ?>>BME</option>
+    </select>
+</div>
+<div class="input-box">
+    <i class='bx bxs-user'></i>
+    <select id="course" name="course" disabled required>
+        <option value="" disabled selected>Select Program</option>
+    </select>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const departmentSelect = document.getElementById('department');
+        const courseSelect = document.getElementById('course');
+
+        const coursesByDepartment = {
+            "DICT": ["BSIT", "BSCS", "BSIS", "BTVTED"],
+            "BME": ["BSA", "BSAIS", "BSE", "BPA"]
+        };
+
+        departmentSelect.addEventListener('change', function () {
+            const selectedDepartment = departmentSelect.value;
+
+            // Clear previous course options
+            courseSelect.innerHTML = '<option value="" disabled selected>Select Course</option>';
+
+            // Add courses based on the selected department
+            if (coursesByDepartment[selectedDepartment]) {
+                coursesByDepartment[selectedDepartment].forEach(function (course) {
+                    const option = document.createElement('option');
+                    option.value = course;
+                    option.textContent = course;
+                    courseSelect.appendChild(option);
+                });
+            }
+        });
+
+        // Retain selected value after form submission
+        <?php if (isset($_POST['department']) && isset($_POST['course'])): ?>
+        const savedDepartment = "<?= $_POST['department'] ?>";
+        const savedCourse = "<?= $_POST['course'] ?>";
+
+        if (coursesByDepartment[savedDepartment]) {
+            coursesByDepartment[savedDepartment].forEach(function (course) {
+                const option = document.createElement('option');
+                option.value = course;
+                option.textContent = course;
+                if (course === savedCourse) {
+                    option.selected = true;
+                }
+                courseSelect.appendChild(option);
+            });
+        }
+        <?php endif; ?>
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const userTypeSelect = document.querySelector('select[name="user_type"]');
+    const departmentSelect = document.getElementById('department');
+    const courseSelect = document.getElementById('course');
+    const departmentIcon = departmentSelect.previousElementSibling; // This gets the icon before the department select
+    const courseIcon = courseSelect.previousElementSibling; // This gets the icon before the course select
+
+    // Function to show/hide department and course dropdowns based on user type
+    function toggleDropdowns() {
+        if (userTypeSelect.value === 'student') {
+            departmentSelect.removeAttribute('disabled');
+            courseSelect.removeAttribute('disabled');
+            departmentSelect.style.display = 'block';
+            courseSelect.style.display = 'block';
+            departmentIcon.style.display = 'block'; // Show the department icon
+            courseIcon.style.display = 'block'; // Show the course icon
+        } else {
+            departmentSelect.setAttribute('disabled', 'disabled');
+            courseSelect.setAttribute('disabled', 'disabled');
+            departmentSelect.style.display = 'none';
+            courseSelect.style.display = 'none';
+            departmentIcon.style.display = 'none'; // Hide the department icon
+            courseIcon.style.display = 'none'; // Hide the course icon
+        }
+    }
+
+    // Initially set the dropdowns state
+    toggleDropdowns();
+
+    // Add event listener to user type dropdown
+    userTypeSelect.addEventListener('change', toggleDropdowns);
+});
+
+</script>
+
+
 
         <button class="login-btn" name="submit">Save</button>
 

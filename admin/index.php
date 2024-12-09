@@ -24,7 +24,7 @@ $_SESSION['last_activity'] = time(); // Update last activity time
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home</title>
-  <link rel="stylesheet" href="style-admin.css">
+  <link rel="stylesheet" href="style-ad.css">
 </head>
 <body>
   <nav id="sidebar">
@@ -113,7 +113,7 @@ $_SESSION['last_activity'] = time(); // Update last activity time
     <div style="padding: 15px;">
       <h3 style="margin: 0;">Marc Andro Levantino</h3>
       <p style="margin: 10px 0;">BSIT 3-1</p>
-    </div>`
+    </div>
   </div>
 
   <div style="border-radius: 8px; overflow: hidden; margin: 10px; width: 200px; height: 350px; background-color: #3C0008; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -131,7 +131,7 @@ $_SESSION['last_activity'] = time(); // Update last activity time
     transition: all 0.3s ease-in-out;
     cursor: pointer;
     }">
-    <img src="/management-system/img/andro.jpg" alt="Image 5" style="width: 100%; height: 200px; object-fit: cover;">
+    <img src="/management-system/img/paul.jpg" alt="Image 5" style="width: 100%; height: 200px; object-fit: cover;">
     <div style="padding: 15px;">
       <h3 style="margin: 0;">John Paul Garlan</h3>
       <p style="margin: 10px 0;">BSIT 3-1</p>
@@ -142,7 +142,7 @@ $_SESSION['last_activity'] = time(); // Update last activity time
     transition: all 0.3s ease-in-out;
     cursor: pointer;
     }">
-    <img src="/management-system/img/andro.jpg" alt="Image 6" style="width: 100%; height: 200px; object-fit: cover;">
+    <img src="/management-system/img/althea.jpg" alt="Image 6" style="width: 100%; height: 200px; object-fit: cover;">
     <div style="padding: 15px;">
       <h3 style="margin: 0;">Althea Mary Neil Lanuza</h3>
       <p style="margin: 10px 0;">BSIT 3-1</p>

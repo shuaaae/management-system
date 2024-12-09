@@ -251,6 +251,30 @@ main p{
   border-bottom: none;
 }
 
+.card-buttons .delete-btn {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: 15px;
+  margin-top: 10px;
+}
+
+
+/* Edit Button Hover */
+.card-buttons .delete-btn:hover {
+  color: black; /* Green for edit */
+  /* Remove the blue line under the button */
+  border-bottom: none;
+}
+
+
 
 @media(max-width: 800px){
   body{
