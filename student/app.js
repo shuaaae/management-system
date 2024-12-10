@@ -9,6 +9,27 @@ function toggleSidebar(){
   closeAllSubMenus()
 }
 
+document.querySelector('input[type="file"]').addEventListener('change', function (event) {
+  var formData = new FormData();
+  formData.append('profile_pic', event.target.files[0]);
+
+  fetch('', { // Send request to the current page
+      method: 'POST',
+      body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.status === 'success') {
+          // Refresh the page to display the updated image
+          window.location.reload();
+      } else {
+          alert('Error uploading profile picture. Please try again.');
+      }
+  })
+  .catch(error => console.error('Error:', error));
+});
+
+
 function toggleSubMenu(button){
 
   if(!button.nextElementSibling.classList.contains('show')){

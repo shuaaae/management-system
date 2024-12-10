@@ -265,7 +265,7 @@ function showModal($error_message) {
 <form action="your_php_script.php" method="POST" class="register-form" id="register" style="display:none;">
         <div class="input-box">
             <i class='bx bxs-user'></i>
-            <input type="text" name="fName" id="fName" placeholder="Name" value="<?= isset($_POST['fName']) ? $_POST['fName'] : '' ?>" required>
+            <input type="text" name="fName" id="fName" placeholder="Full Name" value="<?= isset($_POST['fName']) ? $_POST['fName'] : '' ?>" required>
         </div>
         <div class="input-box">
             <i class='bx bxs-user'></i>

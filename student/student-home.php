@@ -40,7 +40,7 @@ if ($result && mysqli_num_rows($result) > 0) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home</title>
-  <link rel="stylesheet" href="style-st.css">
+  <link rel="stylesheet" href=" style.css">
 </head>
 <body>
   <nav id="sidebar">
@@ -87,6 +87,34 @@ if ($result && mysqli_num_rows($result) > 0) {
         student information, and updates. Our goal is to support your journey toward academic excellence and personal growth.
         Dive in, explore, and make the most out of this system. Together, let’s achieve great things!</p>
     </div>
+
+    <div class="wrapper">
+  <div class="container2">
+    <div class="announcement-header">
+     
+      <div class="admin-details">
+        <p class="admin-name">System Administrator</p>
+      </div>
+      <span class="announcement-tag">Announcement</span>
+    </div>
+    <div class="announcement-content">
+    <h2>Welcome to Sorsogon State University - Bulan Campus</h2>
+      <img src="/management-system/img/d.png" alt="Welcome Announcement" class="announcement-image">
+    </div>
+    <div class="announcement-likes">
+    
+    </div>
+  </div>
+
+  <div class="container1">
+    <h2>You can now upload a picture and change your password.</h2>
+    <p>Easily manage your account by updating your profile picture or securing your account with a new password.</p>
+    <a href="st-profile.php" class="profile-button">Go to profile</a>
+  </div>
+</div>
+
+
+
   </main>
   <script src="app.js"></script>
 </body>
