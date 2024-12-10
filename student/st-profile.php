@@ -43,7 +43,8 @@ function uploadProfilePicture($user_id, $conn, $student) {
       // Validate file extension
       $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
       if (!in_array($fileExtension, $allowedExtensions)) {
-          die("Invalid file type. Only JPG, JPEG, PNG, and GIF files are allowed.");
+          echo json_encode(['status' => 'error', 'message' => 'Invalid file type. Only JPG, JPEG, PNG, and GIF files are allowed.']);
+          exit();
       }
 
       $uploadDir = '../uploads/profile_pics/';
@@ -51,6 +52,7 @@ function uploadProfilePicture($user_id, $conn, $student) {
       $filePath = $uploadDir . $newFileName;
 
       if (move_uploaded_file($fileTmpPath, $filePath)) {
+          // Delete old image if exists and not the default one
           if ($student && $student['profile_pic'] != 'default-profile-pic.jpg') {
               $oldImagePath = $uploadDir . $student['profile_pic'];
               if (file_exists($oldImagePath)) {
@@ -60,23 +62,21 @@ function uploadProfilePicture($user_id, $conn, $student) {
 
           $query = "UPDATE user_form SET profile_pic = '$newFileName' WHERE id = '$user_id'";
           if (mysqli_query($conn, $query)) {
-              echo json_encode(['status' => 'success', 'newPic' => $newFileName]);
+              // Successfully uploaded, redirect to refresh the page with new image
+              header("Location: " . $_SERVER['PHP_SELF']);
               exit();
           }
       }
   }
-  echo json_encode(['status' => 'error']);
-  exit();
-}
-
-
-// Check if the form to upload profile picture is submitted
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_pic'])) {
-    $newProfilePic = uploadProfilePicture($user_id, $conn, $student); // Upload the profile picture and update the database
 }
 
 // Set the profile picture, using the default one if not set
-$profilePic = isset($student['profile_pic']) ? $student['profile_pic'] : 'default-profile-pic.jpg'; 
+$profilePic = isset($student['profile_pic']) ? $student['profile_pic'] : 'default-profile-pic.jpg';
+
+// Handle file upload when form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_pic'])) {
+  uploadProfilePicture($user_id, $conn, $student);
+}
 ?>
 
 <!DOCTYPE html>
@@ -85,7 +85,7 @@ $profilePic = isset($student['profile_pic']) ? $student['profile_pic'] : 'defaul
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home</title>
-  <link rel="stylesheet" href="style-st.css">
+  <link rel="stylesheet" href="style.css">
   <style>
     .change-password-btn {
       display: inline-block;
@@ -242,32 +242,6 @@ $profilePic = isset($student['profile_pic']) ? $student['profile_pic'] : 'defaul
         </form>
     <?php endif; ?>
 </div>
-
-<!-- Javascript for adjusting image position -->
-<script>
-     // JavaScript to dynamically update the profile picture without refresh
-     document.querySelector('input[type="file"]').addEventListener('change', function (event) {
-    var formData = new FormData();
-    formData.append('profile_pic', event.target.files[0]);
-
-    fetch('', { // Send request to the current page
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            // Refresh the page to display the updated image
-            window.location.reload();
-        } else {
-            alert('Error uploading profile picture. Please try again.');
-        }
-    })
-    .catch(error => console.error('Error:', error));
-});
-
-
-        </script>
 
           </div>
         </div>

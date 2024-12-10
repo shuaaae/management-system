@@ -33,8 +33,8 @@ if (isset($_POST['submit'])) { // Registration logic
     $password = $_POST['password'];
     $cpass = $_POST['cpassword'];
     $user_type = secureInput($conn, $_POST['user_type']);
-    $department = secureInput($conn, $_POST['department']);
-    $course = secureInput($conn, $_POST['course']); // Get course (program) value
+    $department_name = secureInput($conn, $_POST['department']);  // Department name
+    $course_name = secureInput($conn, $_POST['course']); // Course name
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error[] = 'Invalid email format';
@@ -61,11 +61,49 @@ if (isset($_POST['submit'])) { // Registration logic
 
         mysqli_begin_transaction($conn);
 
-        // Updated query to include department and course
-        $insert = "INSERT INTO user_form (fName, uName, email, password, user_type, department, course, verification_token, verified) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)";
-        $stmt = $conn->prepare($insert);
-        $stmt->bind_param("ssssssss", $fName, $uName, $email, $hashed_pass, $user_type, $department, $course, $verification_token);
+        // 1. Check if the department exists, if not, insert it
+        $select_department = "SELECT id FROM department WHERE name = ?";
+        $stmt = $conn->prepare($select_department);
+        $stmt->bind_param("s", $department_name);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows == 0) {
+            // Insert the new department
+            $insert_department = "INSERT INTO department (name) VALUES (?)";
+            $stmt = $conn->prepare($insert_department);
+            $stmt->bind_param("s", $department_name);
+            $stmt->execute();
+            $department_id = $stmt->insert_id; // Get the newly inserted department ID
+        } else {
+            $row = $result->fetch_assoc();
+            $department_id = $row['id']; // Use the existing department ID
+        }
+
+        // 2. Check if the course exists, if not, insert it
+        $select_course = "SELECT id FROM course WHERE name = ? AND department_id = ?";
+        $stmt = $conn->prepare($select_course);
+        $stmt->bind_param("si", $course_name, $department_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows == 0) {
+            // Insert the new course
+            $insert_course = "INSERT INTO course (name, department_id) VALUES (?, ?)";
+            $stmt = $conn->prepare($insert_course);
+            $stmt->bind_param("si", $course_name, $department_id);
+            $stmt->execute();
+            $course_id = $stmt->insert_id; // Get the newly inserted course ID
+        } else {
+            $row = $result->fetch_assoc();
+            $course_id = $row['id']; // Use the existing course ID
+        }
+
+        // 3. Insert the user data into the user_form table
+        $insert_user = "INSERT INTO user_form (fName, uName, email, password, user_type, department_id, course_id, verification_token, verified) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)";
+        $stmt = $conn->prepare($insert_user);
+        $stmt->bind_param("ssssssss", $fName, $uName, $email, $hashed_pass, $user_type, $department_id, $course_id, $verification_token);
 
         if ($stmt->execute()) {
             try {
@@ -105,6 +143,7 @@ if (isset($_POST['submit'])) { // Registration logic
         }
     }
 }
+
 
 if (isset($_POST['login'])) {
     $username = secureInput($conn, $_POST['username']);
@@ -322,15 +361,15 @@ function showModal($error_message) {
         const courseSelect = document.getElementById('course');
 
         const coursesByDepartment = {
-            "DICT": ["BSIT", "BSCS", "BSIS", "BTVTED"],
-            "BME": ["BSA", "BSAIS", "BSE", "BPA"]
+            "DICT": ["BSIT(Bachelor of Science in Information Technology)", "BSCS(Bachelor of Science in Computer Science)", "BSIS(Bachelor of Science in Information System)", "BTVTED(Bachelor of Technical Vocational Education and Training)"],
+            "BME": ["BSA(Bachelor of Science in Accountancy)", "BSAIS(Bachelor of Science in Accountancy and Information System)", "BSE(Bachelor of Science in Entrepreneurship)", "BPA(Bachelor of Public Administration)"]
         };
 
         departmentSelect.addEventListener('change', function () {
             const selectedDepartment = departmentSelect.value;
 
             // Clear previous course options
-            courseSelect.innerHTML = '<option value="" disabled selected>Select Course</option>';
+            courseSelect.innerHTML = '<option value="" disabled selected>Select Program</option>';
 
             // Add courses based on the selected department
             if (coursesByDepartment[selectedDepartment]) {

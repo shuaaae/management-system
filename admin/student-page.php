@@ -5,7 +5,22 @@ session_start();
 @include '../config.php';
 
 // Fetch data for users with user_type 'student', including department and program
-$query = "SELECT * FROM user_form WHERE user_type = 'student'";
+$query = "
+    SELECT 
+    user_form.id, 
+    user_form.fName, 
+    user_form.uName, 
+    user_form.email, 
+    user_form.user_type, 
+    user_form.verified, 
+    IFNULL(department.name, 'No Department') AS department_name,   -- Default if NULL
+    IFNULL(course.name, 'No Program') AS course_name              -- Default if NULL
+FROM user_form
+LEFT JOIN department ON user_form.department_id = department.id
+LEFT JOIN course ON user_form.course_id = course.id
+WHERE user_form.user_type = 'student';
+
+";
 $result = mysqli_query($conn, $query);
 
 // Check if the query was successful and if there are results
@@ -113,16 +128,18 @@ if (isset($_GET['delete_id'])) {
                       echo "<h3>" . htmlspecialchars($row['fName']) . "</h3>";  // Display full name (fName)
                       echo "<p><strong>Username:</strong> " . htmlspecialchars($row['uName']) . "</p>";  // Display username (uName)
                       echo "<p><strong>Email:</strong> " . htmlspecialchars($row['email']) . "</p>";  // Display email
-                      echo "<p><strong>Department:</strong> " . htmlspecialchars($row['department']) . "</p>";  // Display department
-                      $program = isset($row['course']) ? htmlspecialchars($row['course']) : 'N/A';  // Default to 'N/A' if 'program' is not set
-                      echo "<p><strong>Program:</strong> " . $program . "</p>";  // Display program
+                      // Display department with empty string if NULL
+                      echo "<p><strong>Department:</strong> " . (!empty($row['department_name']) ? htmlspecialchars($row['department_name']) : 'No Department') . "</p>";
+                      echo "<p><strong>Program:</strong> " . (!empty($row['course_name']) ? htmlspecialchars($row['course_name']) : 'No Program') . "</p>";
+                      
                       echo "<p><strong>Verified:</strong> " . ($row['verified'] ? 'Yes' : 'No') . "</p>";  // Display verified status
                       echo "<div class='card-buttons'>";  // Container for buttons
                       echo "<a href='/management-system/forgot-pass/reset.php?email=" . urlencode($row['email']) . "&from=admin-dash' class='view-btn'>Change Password</a>";
-                      echo "<a href='?delete_id=" . $row['id'] . "' class='delete-btn' onclick='return confirm(\"Are you sure you want to delete this student?\")'>Delete</a>";  // Add Delete button
+                      echo "<a href='?delete_id=" . $row['id'] . "' class='delete-btn' onclick='return confirm(\"Are you sure you want to delete this student?\")'>Delete</a>";
                       echo "</div>";
                       echo "</div>";
-                    }
+                  }
+                  
                     ?>
                 </div>
             </section>

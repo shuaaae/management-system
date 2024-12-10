@@ -9,24 +9,30 @@ function toggleSidebar(){
   closeAllSubMenus()
 }
 
-document.querySelector('input[type="file"]').addEventListener('change', function (event) {
-  var formData = new FormData();
-  formData.append('profile_pic', event.target.files[0]);
-
-  fetch('', { // Send request to the current page
-      method: 'POST',
-      body: formData
-  })
-  .then(response => response.json())
-  .then(data => {
-      if (data.status === 'success') {
-          // Refresh the page to display the updated image
-          window.location.reload();
-      } else {
-          alert('Error uploading profile picture. Please try again.');
+document.getElementById('uploadForm').addEventListener('submit', function(event) {
+  event.preventDefault(); // Prevent page refresh
+  
+  var formData = new FormData(this); // Get form data
+  
+  // Send AJAX request
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', 'upload_profile_pic.php', true);
+  
+  // Handle the response from PHP
+  xhr.onload = function() {
+      if (xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+          if (response.status === 'success') {
+              // Update the profile image on the page without refreshing
+              document.getElementById('profilePic').src = '../uploads/profile_pics/' + response.newPic;
+              alert('Profile picture updated successfully!');
+          } else {
+              alert('Failed to upload image.');
+          }
       }
-  })
-  .catch(error => console.error('Error:', error));
+  };
+  
+  xhr.send(formData); // Send the form data
 });
 
 
