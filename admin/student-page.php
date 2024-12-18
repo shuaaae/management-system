@@ -134,7 +134,6 @@ if (isset($_GET['delete_id'])) {
                       
                       echo "<p><strong>Verified:</strong> " . ($row['verified'] ? 'Yes' : 'No') . "</p>";  // Display verified status
                       echo "<div class='card-buttons'>";  // Container for buttons
-                      echo "<a href='/management-system/forgot-pass/reset.php?email=" . urlencode($row['email']) . "&from=admin-dash' class='view-btn'>Change Password</a>";
                       echo "<a href='?delete_id=" . $row['id'] . "' class='delete-btn' onclick='return confirm(\"Are you sure you want to delete this student?\")'>Delete</a>";
                       echo "</div>";
                       echo "</div>";

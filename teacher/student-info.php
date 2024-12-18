@@ -92,7 +92,6 @@ $_SESSION['last_activity'] = time(); // Update last activity time
                         echo "<p><strong>Email:</strong> " . htmlspecialchars($row['email']) . "</p>";  // Display email
                         echo "<p><strong>Verified:</strong> " . ($row['verified'] ? 'Yes' : 'No') . "</p>";  // Display verified status
                         echo "<div class='card-buttons'>";  // Container for buttons
-                        echo "<a href='/management-system/forgot-pass/reset.php?email=" . urlencode($row['email']) . "&from=admin-dash' class='view-btn'>Change Password</a>";
                         echo "</div>";
                         echo "</div>";
                     }
