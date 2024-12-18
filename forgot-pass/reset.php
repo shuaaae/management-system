@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset-submit'])) {
             echo "<script>alert('Error resetting password. Please try again.');</script>";
         }
     } else {
-        echo "<script>alert('Passwords do not match.');</script>";
+        echo "<script>alert('Passwords do not match or Password is already inside the Password History .');</script>";
     }
 }
 ?>

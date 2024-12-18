@@ -223,7 +223,7 @@ main p{
 
 /* Buttons */
 .card-buttons .view-btn,
-.card-buttons .edit-btn {
+.card-buttons .delete-btn {
   background-color: var(--accent-clr);
   color: white;
   border: none;
@@ -239,9 +239,9 @@ main p{
 }
 
 /* View Button Hover */
-.card-buttons .view-btn:hover {
+.card-buttons .delete-btn:hover {
   color: black;
-  background-color: #4d68ff;
+  background-color: #FF0000;
 }
 
 /* Edit Button Hover */

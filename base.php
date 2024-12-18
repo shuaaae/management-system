@@ -33,7 +33,7 @@ if (isset($_POST['submit'])) { // Registration logic
     $password = $_POST['password'];
     $cpass = $_POST['cpassword'];
     $user_type = secureInput($conn, $_POST['user_type']);
-    $department_name = $user_type !== 'professor' ? secureInput($conn, $_POST['department']) : null;
+ $department_name = $user_type !== 'professor' ? secureInput($conn, $_POST['department']) : null;
     $course_name = $user_type !== 'professor' ? secureInput($conn, $_POST['course']) : null;
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
